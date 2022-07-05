@@ -21,11 +21,6 @@ export const LoginPage = () => {
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
 
-  const customChange = (field: string, val: string, setFieldValue: any) => {
-    setShowLoginError(false);
-    setFieldValue(field, val);
-  };
-
   return (
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
       <Text style={styles.title}>D&D Character Manager</Text>
@@ -47,12 +42,15 @@ export const LoginPage = () => {
             setShowLoginError(true);
           }
         }}>
-        {({ handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting, setFieldValue }) => (
+        {({ setFieldValue, handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting }) => (
           <View style={styles.container}>
             <TextInput
               style={[styles.input, { width: partialWidth }]}
               placeholder="User Name"
-              onChangeText={val => customChange('userName', val, setFieldValue)}
+              onChangeText={val => {
+                setShowLoginError(false);
+                setFieldValue('userName', val);
+              }}
               onBlur={() => {
                 setShowLoginError(false);
                 setFieldTouched('userName');
@@ -68,7 +66,10 @@ export const LoginPage = () => {
             <TextInput
               style={[styles.input, { width: partialWidth }]}
               placeholder="Password"
-              onChangeText={val => customChange('password', val, setFieldValue)}
+              onChangeText={val => {
+                setShowLoginError(false);
+                setFieldValue('password', val);
+              }}
               onBlur={() => {
                 setShowLoginError(false);
                 setFieldTouched('password');

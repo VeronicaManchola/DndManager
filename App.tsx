@@ -7,7 +7,7 @@ import SummaryPage from './src/pages/SummaryPage';
 const App = () => {
   const { currentUser } = useContext(UserContext);
 
-  return <SafeAreaView>{currentUser?.loggedIn ? '' : <LoginPage />}</SafeAreaView>;
+  return <SafeAreaView>{currentUser?.loggedIn ? <SummaryPage /> : <LoginPage />}</SafeAreaView>;
 };
 
 export default withUserProvider(App);
