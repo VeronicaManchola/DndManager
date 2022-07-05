@@ -10,22 +10,21 @@ const LoginSchema = Yup.object().shape({
     .max(30, 'User Name is too long!')
     .required('User Name is required')
     .label('User Name'),
-  password: Yup.string()
-    // .matches(/\w*[a-z]\w*/, 'Password must have a small letter')
-    // .matches(/\w*[A-Z]\w*/, 'Password must have a capital letter')
-    // .matches(/\d/, 'Password must have a number')
-    // .min(8, ({ min }) => `Password must be at least ${min} characters`)
-    .required('Password is required')
-    .label('Password'),
+  password: Yup.string().required('Password is required').label('Password'),
 });
 
 export const LoginPage = () => {
-  const [loginError, setLoginError] = useState(false);
+  const [showLoginError, setShowLoginError] = useState(false);
   const { logInUser } = useContext(UserContext);
   const dimensions = Dimensions.get('window');
   const partialWidth = dimensions.width * 0.8;
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
+
+  const customChange = (field: string, val: string, setFieldValue: any) => {
+    setShowLoginError(false);
+    setFieldValue(field, val);
+  };
 
   return (
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
@@ -45,25 +44,22 @@ export const LoginPage = () => {
           const [loginResponse] = logInUser(values.userName, values.password);
           setSubmitting(false);
           if (!loginResponse) {
-            setLoginError(true);
+            setShowLoginError(true);
           }
         }}>
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting }) => (
+        {({ handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting, setFieldValue }) => (
           <View style={styles.container}>
             <TextInput
               style={[styles.input, { width: partialWidth }]}
               placeholder="User Name"
-              onChangeText={() => {
-                setLoginError(true);
-                handleChange('userName');
-              }}
+              onChangeText={val => customChange('userName', val, setFieldValue)}
               onBlur={() => {
-                setLoginError(true);
+                setShowLoginError(false);
                 setFieldTouched('userName');
                 handleBlur('userName');
               }}
               value={values.userName}
-              autoComplete="username"
+              autoCompleteType="username"
               textContentType="username"
               autoCorrect={false}
               autoCapitalize="none"
@@ -72,17 +68,14 @@ export const LoginPage = () => {
             <TextInput
               style={[styles.input, { width: partialWidth }]}
               placeholder="Password"
-              onChangeText={() => {
-                setLoginError(true);
-                handleChange('password');
-              }}
+              onChangeText={val => customChange('password', val, setFieldValue)}
               onBlur={() => {
-                setLoginError(true);
+                setShowLoginError(false);
                 setFieldTouched('password');
                 handleBlur('password');
               }}
               value={values.password}
-              autoComplete="password"
+              autoCompleteType="password"
               textContentType="password"
               autoCorrect={false}
               autoCapitalize="none"
@@ -90,7 +83,7 @@ export const LoginPage = () => {
             />
             <Text style={{ color: 'red' }}>{errors.password && touched.password && errors.password}</Text>
             <Button onPress={handleSubmit} title="Submit" disabled={isSubmitting} />
-            <Text style={{ color: 'red' }}>{loginError && 'User Name or password is invalid.'}</Text>
+            <Text style={{ color: 'red' }}>{showLoginError && 'User Name or password is invalid.'}</Text>
           </View>
         )}
       </Formik>
