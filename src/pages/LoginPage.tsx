@@ -13,7 +13,7 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required('Password is required').label('Password'),
 });
 
-export const LoginPage = () => {
+export const LoginPage = ({ navigation }: any) => {
   const [showLoginError, setShowLoginError] = useState(false);
   const { logInUser } = useContext(UserContext);
   const dimensions = Dimensions.get('window');
@@ -38,9 +38,7 @@ export const LoginPage = () => {
         onSubmit={(values, { setSubmitting }) => {
           const [loginResponse] = logInUser(values.userName, values.password);
           setSubmitting(false);
-          if (!loginResponse) {
-            setShowLoginError(true);
-          }
+          !loginResponse ? setShowLoginError(true) : navigation.navigate('Summary');
         }}>
         {({ setFieldValue, handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting }) => (
           <View style={styles.container}>
