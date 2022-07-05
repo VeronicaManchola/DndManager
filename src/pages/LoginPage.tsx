@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Button, Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Formik } from 'formik';
-import { UserContext } from '../contexts/user.context';
+import { AuthContext } from '../contexts/user.context';
 import * as Yup from 'yup';
 
 const LoginSchema = Yup.object().shape({
@@ -13,9 +13,9 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required('Password is required').label('Password'),
 });
 
-export const LoginPage = ({ navigation }: any) => {
+const LoginPage = ({ navigation }: any) => {
   const [showLoginError, setShowLoginError] = useState(false);
-  const { logInUser } = useContext(UserContext);
+  const { signIn } = useContext(AuthContext);
   const dimensions = Dimensions.get('window');
   const partialWidth = dimensions.width * 0.8;
   const imageHeight = Math.round((partialWidth * 9) / 16);
@@ -36,9 +36,10 @@ export const LoginPage = ({ navigation }: any) => {
         initialValues={{ userName: '', password: '' }}
         validationSchema={LoginSchema}
         onSubmit={(values, { setSubmitting }) => {
-          const [loginResponse] = logInUser(values.userName, values.password);
-          setSubmitting(false);
-          !loginResponse ? setShowLoginError(true) : navigation.navigate('Summary');
+          signIn({ username: values.userName, password: values.password }).catch(() => {
+            setSubmitting(false);
+            setShowLoginError(true);
+          });
         }}>
         {({ setFieldValue, handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting }) => (
           <View style={styles.container}>
@@ -107,3 +108,5 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
 });
+
+export default LoginPage;
