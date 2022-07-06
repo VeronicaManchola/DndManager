@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "789172993432",
+    "project_id": "dnd-manager-deb88",
+    "storage_bucket": "dnd-manager-deb88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789172993432:android:c03f3c5b007c599f97ffed",
+        "android_client_info": {
+          "package_name": "com.nativeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789172993432-4kf8r7qnmqqvpsqtrihnv6r4hp912019.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU1M3YxdSev8apluFIDrwMjfl7hKA_oAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789172993432-4kf8r7qnmqqvpsqtrihnv6r4hp912019.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

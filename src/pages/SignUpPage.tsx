@@ -1,22 +1,21 @@
-import React, { useContext, useState } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useContext } from 'react';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AuthContext } from '../contexts/user.context';
 import PageForm from '../components/PageForm';
 
-const LoginPage = () => {
-  const { signIn } = useContext(AuthContext);
+const SignUpPage = () => {
+  const { signUp } = useContext(AuthContext);
   const dimensions = Dimensions.get('window');
   const partialWidth = dimensions.width * 0.8;
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
 
   const submitHandler = (values: Record<string, string>) => {
-    return signIn({ email: values.email, password: values.password });
+    return signUp({ email: values.email, password: values.password });
   };
 
   return (
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
-      <Text style={styles.title}>D&D Character Manager</Text>
       <View style={styles.container}>
         <Image
           source={{
@@ -24,6 +23,7 @@ const LoginPage = () => {
           }}
           style={{ width: imageWidth, height: imageHeight }}
         />
+        <Text style={styles.title}>Sign Up to D&D Character Manager</Text>
       </View>
       <PageForm onSubmit={submitHandler} partialWidth={partialWidth} />
     </ScrollView>
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default SignUpPage;
