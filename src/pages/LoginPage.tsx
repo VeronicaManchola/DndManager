@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AuthContext } from '../contexts/user.context';
 import PageForm from '../components/PageForm';
+import auth from '@react-native-firebase/auth';
 
 const LoginPage = () => {
   const { signIn } = useContext(AuthContext);
@@ -9,10 +10,6 @@ const LoginPage = () => {
   const partialWidth = dimensions.width * 0.8;
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
-
-  const submitHandler = (values: Record<string, string>) => {
-    return signIn({ email: values.email, password: values.password });
-  };
 
   return (
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
@@ -25,7 +22,7 @@ const LoginPage = () => {
           style={{ width: imageWidth, height: imageHeight }}
         />
       </View>
-      <PageForm onSubmit={submitHandler} partialWidth={partialWidth} />
+      <PageForm onSubmit={signIn} partialWidth={partialWidth} />
     </ScrollView>
   );
 };

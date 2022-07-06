@@ -4,16 +4,12 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 interface PageFormProps {
-  onSubmit: (values: Record<string, string>) => Promise<void>;
+  onSubmit: (values: Record<string, string>) => Promise<string>;
   partialWidth: number;
 }
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string()
-    .min(3, 'Email is too short!')
-    .max(320, 'Email is too long!')
-    .required('Email is required')
-    .label('Email'),
+  email: Yup.string().email('Invalid email format').required('Email is required').label('Email'),
   password: Yup.string().required('Password is required').label('Password'),
 });
 
@@ -26,8 +22,12 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
       validationSchema={validationSchema}
       onSubmit={(values, { setSubmitting }) => {
         onSubmit(values)
-          .catch(() => {
+          .then(res => {
+            if (res === 'auth/user-not-found') setShowLoginError(true);
+          })
+          .catch(err => {
             setShowLoginError(true);
+            console.log('err', err);
           })
           .finally(() => setSubmitting(false));
       }}>
@@ -50,6 +50,7 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
             textContentType="emailAddress"
             autoCorrect={false}
             autoCapitalize="none"
+            keyboardType="email-address"
           />
           <Text style={{ color: 'red' }}>{errors.email && touched.email && errors.email}</Text>
           <TextInput

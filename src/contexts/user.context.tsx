@@ -7,7 +7,7 @@ interface dispatchAction {
 }
 
 interface AuthContext {
-  signIn: (data: any) => Promise<void>;
+  signIn: (data: any) => Promise<string>;
   signOut: () => void;
   signUp: (data: any) => Promise<void>;
 }
@@ -50,14 +50,16 @@ export const authContextMemo = (dispatch: React.Dispatch<dispatchAction>) => {
     () => ({
       signIn: async (data: any) => {
         dispatch({ type: 'LOADING_STATUS', isLoading: true });
-        auth()
+        const loginResponse = await auth()
           .signInWithEmailAndPassword(data.email, data.password)
           .then(() => {
-            console.log('User signed in!');
+            dispatch({ type: 'SIGN_IN' });
           })
           .catch(error => {
-            console.error(error);
+            return error.code;
           });
+
+        return loginResponse;
       },
       signOut: () => {
         dispatch({ type: 'LOADING_STATUS', isLoading: false });

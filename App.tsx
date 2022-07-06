@@ -6,7 +6,7 @@ import LoginPage from './src/pages/LoginPage';
 import SummaryPage from './src/pages/SummaryPage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import * as SecureStore from 'expo-secure-store';
+import auth from '@react-native-firebase/auth';
 import LoadingPage from './src/pages/LoadingPage';
 import SignUpPage from './src/pages/SignUpPage';
 
@@ -15,21 +15,14 @@ const Drawer = createDrawerNavigator();
 const App = () => {
   const { state, dispatch } = authReducer();
 
+  const onAuthStateChanged = (user: any) => {
+    console.log('App user', user);
+    dispatch({ type: 'LOADING_STATUS', isLoading: false });
+  };
+
   React.useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userToken;
-
-      try {
-        userToken = await SecureStore.getItemAsync('userToken');
-      } catch (e) {
-        console.log('err', e);
-        // Restoring token failed
-      }
-
-      dispatch({ type: 'LOADING_STATUS', isLoading: false });
-    };
-
-    bootstrapAsync();
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
   }, []);
 
   return (
