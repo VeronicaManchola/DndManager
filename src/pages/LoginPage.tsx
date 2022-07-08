@@ -1,10 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AuthContext } from '../contexts/user.context';
 import PageForm from '../components/PageForm';
-import auth from '@react-native-firebase/auth';
+import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 
-const LoginPage = () => {
+interface LoginPageProps {
+  navigation: DrawerNavigationHelpers;
+}
+
+const LoginPage = ({ navigation }: LoginPageProps) => {
   const { signIn } = useContext(AuthContext);
   const dimensions = Dimensions.get('window');
   const partialWidth = dimensions.width * 0.8;
@@ -23,6 +27,18 @@ const LoginPage = () => {
         />
       </View>
       <PageForm onSubmit={signIn} partialWidth={partialWidth} />
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+        <View>
+          <Text style={{ width: 50, textAlign: 'center' }}>Or</Text>
+        </View>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+      </View>
+      <View style={styles.container}>
+        <Pressable onPress={() => navigation.navigate('SignUp')} style={styles.wrapperCustom}>
+          <Text style={styles.text}>Create an account here</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 };
@@ -32,9 +48,16 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: 'center',
   },
+  text: {
+    fontSize: 16,
+  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  wrapperCustom: {
+    borderRadius: 8,
+    padding: 6,
   },
 });
 

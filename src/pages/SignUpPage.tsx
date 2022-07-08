@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AuthContext } from '../contexts/user.context';
 import PageForm from '../components/PageForm';
+import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types';
 
-const SignUpPage = () => {
+interface SignupPageProps {
+  navigation: DrawerNavigationHelpers;
+}
+
+const SignUpPage = ({ navigation }: SignupPageProps) => {
   const { signUp } = useContext(AuthContext);
   const dimensions = Dimensions.get('window');
   const partialWidth = dimensions.width * 0.8;
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
-
-  const submitHandler = (values: Record<string, string>) => {
-    return signUp({ email: values.email, password: values.password });
-  };
 
   return (
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
@@ -25,7 +26,19 @@ const SignUpPage = () => {
         />
         <Text style={styles.title}>Sign Up to D&D Character Manager</Text>
       </View>
-      <PageForm onSubmit={submitHandler} partialWidth={partialWidth} />
+      <PageForm onSubmit={signUp} partialWidth={partialWidth} />
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+        <View>
+          <Text style={{ width: 50, textAlign: 'center' }}>Or</Text>
+        </View>
+        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+      </View>
+      <View style={styles.container}>
+        <Pressable onPress={() => navigation.navigate('Login')} style={styles.wrapperCustom}>
+          <Text style={styles.text}>Aldready have an account? Login!</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 };
@@ -35,9 +48,16 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: 'center',
   },
+  text: {
+    fontSize: 16,
+  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  wrapperCustom: {
+    borderRadius: 8,
+    padding: 6,
   },
 });
 

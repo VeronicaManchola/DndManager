@@ -47,12 +47,10 @@ const App = () => {
               </DrawerContentScrollView>
             );
           }}>
-          {state.isLoading ? (
-            <Drawer.Screen name="Loading" component={LoadingPage} options={{ headerShown: false }} />
-          ) : state.userToken == null ? (
+          {state.userToken == null ? (
             <>
               <Drawer.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
-              <Drawer.Screen name="SignUp" component={SignUpPage} />
+              <Drawer.Screen name="SignUp" component={SignUpPage} options={{ headerShown: false }} />
             </>
           ) : (
             <Drawer.Screen name="Summary" component={SummaryPage} />

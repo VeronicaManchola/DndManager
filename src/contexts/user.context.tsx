@@ -9,7 +9,7 @@ interface dispatchAction {
 interface AuthContext {
   signIn: (data: any) => Promise<string>;
   signOut: () => void;
-  signUp: (data: any) => Promise<void>;
+  signUp: (data: any) => Promise<string>;
 }
 
 const reducer = (prevState: any, action: dispatchAction) => {
@@ -52,12 +52,13 @@ export const authContextMemo = (dispatch: React.Dispatch<dispatchAction>) => {
         dispatch({ type: 'LOADING_STATUS', isLoading: true });
         const loginResponse = await auth()
           .signInWithEmailAndPassword(data.email, data.password)
-          .then(() => {
-            dispatch({ type: 'SIGN_IN' });
+          .then(res => {
+            console.log('User signed in ', res);
           })
           .catch(error => {
             return error.code;
-          });
+          })
+          .finally(() => dispatch({ type: 'LOADING_STATUS', isLoading: false }));
 
         return loginResponse;
       },
@@ -69,11 +70,11 @@ export const authContextMemo = (dispatch: React.Dispatch<dispatchAction>) => {
         dispatch({ type: 'SIGN_OUT' });
       },
       signUp: async (data: any) => {
-        dispatch({ type: 'LOADING_STATUS', isLoading: false });
-        auth()
+        dispatch({ type: 'LOADING_STATUS', isLoading: true });
+        const signinResponse = auth()
           .createUserWithEmailAndPassword(data.email, data.password)
-          .then(() => {
-            console.log('User account created & signed in!');
+          .then(res => {
+            console.log('User account created & signed in! ', res);
             dispatch({ type: 'SIGN_IN' });
           })
           .catch(error => {
@@ -85,8 +86,11 @@ export const authContextMemo = (dispatch: React.Dispatch<dispatchAction>) => {
               console.log('That email address is invalid!');
             }
 
-            console.error(error);
-          });
+            return error.code;
+          })
+          .finally(() => dispatch({ type: 'LOADING_STATUS', isLoading: false }));
+
+        return signinResponse;
       },
     }),
     [],
