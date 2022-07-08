@@ -8,10 +8,22 @@ interface SignupPageProps {
   navigation: DrawerNavigationHelpers;
 }
 
+enum SignupErrorTypes {
+  NOT_FOUND = 'auth/email-already-in-use',
+  INVALID_EMAIL = 'auth/invalid-email',
+  WEAK_PASSWORD = 'auth/weak-password',
+}
+
+const signupErrorMessages = {
+  [SignupErrorTypes.NOT_FOUND]: 'This email address has already been registered.',
+  [SignupErrorTypes.INVALID_EMAIL]: 'This email address is not valid.',
+  [SignupErrorTypes.WEAK_PASSWORD]: 'The provided password must be at least 6 characters long.',
+};
+
 const SignUpPage = ({ navigation }: SignupPageProps) => {
   const { signUp } = useContext(AuthContext);
   const dimensions = Dimensions.get('window');
-  const partialWidth = dimensions.width * 0.8;
+  const partialWidth = dimensions.width * 0.6;
   const imageHeight = Math.round((partialWidth * 9) / 16);
   const imageWidth = partialWidth;
 
@@ -26,7 +38,7 @@ const SignUpPage = ({ navigation }: SignupPageProps) => {
         />
         <Text style={styles.title}>Sign Up to D&D Character Manager</Text>
       </View>
-      <PageForm onSubmit={signUp} partialWidth={partialWidth} />
+      <PageForm onSubmit={signUp} errorMessages={signupErrorMessages} partialWidth={partialWidth} />
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
         <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
         <View>
@@ -36,7 +48,7 @@ const SignUpPage = ({ navigation }: SignupPageProps) => {
       </View>
       <View style={styles.container}>
         <Pressable onPress={() => navigation.navigate('Login')} style={styles.wrapperCustom}>
-          <Text style={styles.text}>Aldready have an account? Login!</Text>
+          <Text style={styles.text}>Already have an account? Login!</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -50,13 +62,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    textDecorationLine: 'underline',
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   wrapperCustom: {
-    borderRadius: 8,
     padding: 6,
   },
 });

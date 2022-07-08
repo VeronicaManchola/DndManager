@@ -2,19 +2,22 @@ import React, { FunctionComponent, useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { authReducer } from '../contexts/user.context';
 
 interface PageFormProps {
   onSubmit: (values: Record<string, string>) => Promise<string>;
+  errorMessages: Record<string, string>;
   partialWidth: number;
 }
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email format').required('Email is required').label('Email'),
-  password: Yup.string().required('Password is required').label('Password'),
+  password: Yup.string().min(6).required('Password is required').label('Password'),
 });
 
-const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) => {
-  const [showLoginError, setShowLoginError] = useState(false);
+const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, errorMessages, partialWidth }) => {
+  const [loginError, setLoginError] = useState('');
+  const { dispatch } = authReducer();
 
   return (
     <Formik
@@ -23,13 +26,12 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
       onSubmit={(values, { setSubmitting }) => {
         onSubmit(values)
           .then(res => {
-            if (res === 'auth/user-not-found') setShowLoginError(true);
+            console.log('User logged in');
           })
           .catch(err => {
-            setShowLoginError(true);
-            console.log('err', err);
-          })
-          .finally(() => setSubmitting(false));
+            setLoginError(errorMessages[err]);
+            setSubmitting(false);
+          });
       }}>
       {({ setFieldValue, handleBlur, handleSubmit, values, errors, touched, setFieldTouched, isSubmitting }) => (
         <View style={styles.container}>
@@ -37,11 +39,11 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
             style={[styles.input, { width: partialWidth }]}
             placeholder="Email"
             onChangeText={val => {
-              setShowLoginError(false);
+              setLoginError('');
               setFieldValue('email', val);
             }}
             onBlur={() => {
-              setShowLoginError(false);
+              setLoginError('');
               setFieldTouched('email');
               handleBlur('email');
             }}
@@ -57,11 +59,11 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
             style={[styles.input, { width: partialWidth }]}
             placeholder="Password"
             onChangeText={val => {
-              setShowLoginError(false);
+              setLoginError('');
               setFieldValue('password', val);
             }}
             onBlur={() => {
-              setShowLoginError(false);
+              setLoginError('');
               setFieldTouched('password');
               handleBlur('password');
             }}
@@ -74,7 +76,7 @@ const PageForm: FunctionComponent<PageFormProps> = ({ onSubmit, partialWidth }) 
           />
           <Text style={{ color: 'red' }}>{errors.password && touched.password && errors.password}</Text>
           <Button onPress={handleSubmit} title="Submit" disabled={isSubmitting} />
-          <Text style={{ color: 'red' }}>{showLoginError && 'Email or password is invalid.'}</Text>
+          <Text style={{ color: 'red' }}>{!!loginError && loginError}</Text>
         </View>
       )}
     </Formik>
