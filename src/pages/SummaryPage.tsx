@@ -21,7 +21,11 @@ const SummaryPage = ({ navigation }: any) => {
         color={colors.primary}
         title="Add"
         placement="right"
-        // onPress={navigation.navigate('AddCharacter')}
+        onPress={() => {
+          navigation.navigate('Home', {
+            screen: 'AddCharacter',
+          });
+        }}
       />
     </>
   );

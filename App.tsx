@@ -3,8 +3,13 @@ import 'react-native-gesture-handler';
 import React, { useEffect, useState } from 'react';
 import { AuthContext, authContextMemo, authReducer } from './src/contexts/user.context';
 import LoginPage from './src/pages/LoginPage';
-import SummaryPage from './src/pages/SummaryPage';
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+  Route,
+} from '@react-navigation/native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import auth from '@react-native-firebase/auth';
 import LoadingPage from './src/pages/LoadingPage';
@@ -12,8 +17,14 @@ import SignUpPage from './src/pages/SignUpPage';
 import { Alert, View } from 'react-native';
 import { ThemeContext } from './src/contexts/theme.context';
 import { Switch, Text } from 'react-native-elements';
+import SummaryNavigator from './src/components/SummaryNavigator';
 
 const Drawer = createDrawerNavigator();
+
+const getHeaderTitle = (route: Partial<Route<string, object | undefined>>) => {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Summary';
+  return routeName === 'Summary';
+};
 
 const App = () => {
   const [darkTheme, setDarkTheme] = useState(false);
@@ -97,7 +108,13 @@ const App = () => {
                 <Drawer.Screen name="SignUp" component={SignUpPage} options={{ headerShown: false }} />
               </>
             ) : (
-              <Drawer.Screen name="Summary" component={SummaryPage} />
+              <Drawer.Screen
+                name="Home"
+                component={SummaryNavigator}
+                options={({ route }) => ({
+                  headerShown: getHeaderTitle(route),
+                })}
+              />
             )}
           </Drawer.Navigator>
         </NavigationContainer>
