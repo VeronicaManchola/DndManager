@@ -23,7 +23,7 @@ const SummaryPage = ({ navigation }: any) => {
         placement="right"
         onPress={() => {
           navigation.navigate('Home', {
-            screen: 'AddCharacter',
+            screen: 'Add New Character',
           });
         }}
       />

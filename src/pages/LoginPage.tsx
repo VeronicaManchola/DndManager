@@ -35,12 +35,7 @@ const LoginPage = ({ navigation }: LoginPageProps) => {
     <ScrollView maximumZoomScale={1} minimumZoomScale={1}>
       <Text style={styles.title}>D&D Character Manager</Text>
       <View style={styles.container}>
-        <Image
-          source={{
-            uri: 'https://i.pinimg.com/originals/c7/c3/a0/c7c3a029d172b33287003d26a0c693f9.png',
-          }}
-          style={{ width: imageWidth, height: imageHeight }}
-        />
+        <Image source={require('../assets/logo.png')} style={{ width: imageWidth, height: imageHeight }} />
       </View>
       <PageForm onSubmit={signIn} errorMessages={loginErrorMessages} partialWidth={partialWidth} />
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15 }}>
