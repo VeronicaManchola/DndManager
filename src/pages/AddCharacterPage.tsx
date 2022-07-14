@@ -37,17 +37,7 @@ const AddCharacterPage = ({ navigation }: any) => {
           initialValues={{ name: '', race: '', class: '', level: undefined }}
           validationSchema={characterValidationSchema}
           onSubmit={(values, { setSubmitting }) => {}}>
-          {({
-            setFieldValue,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-            setFieldTouched,
-            isSubmitting,
-          }) => (
+          {({ setFieldValue, handleChange, handleBlur, handleSubmit, values, errors, isSubmitting }) => (
             <View>
               <Card.Title>
                 <Input
@@ -90,7 +80,9 @@ const AddCharacterPage = ({ navigation }: any) => {
               />
               <Button
                 buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 20 }}
+                onPress={handleSubmit}
                 title="Save"
+                disabled={isSubmitting}
               />
             </View>
           )}

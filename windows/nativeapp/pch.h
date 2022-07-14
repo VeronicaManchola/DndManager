@@ -2,6 +2,7 @@
 
 #define NOMINMAX
 
+#include "winrt/SQLitePlugin.h"
 #include <hstring.h>
 #include <restrictederrorinfo.h>
 #include <unknwn.h>
