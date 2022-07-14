@@ -16,7 +16,7 @@ import LoadingPage from './src/pages/LoadingPage';
 import SignUpPage from './src/pages/SignUpPage';
 import { Alert, View } from 'react-native';
 import { ThemeContext } from './src/contexts/theme.context';
-import { Switch, Text } from 'react-native-elements';
+import { Switch, Text } from '@rneui/themed';
 import SummaryNavigator from './src/components/SummaryNavigator';
 
 const Drawer = createDrawerNavigator();

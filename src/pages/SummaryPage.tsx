@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { FAB, Text } from 'react-native-elements';
+import { FAB, Text } from '@rneui/themed';
 import { useTheme } from '@react-navigation/native';
 
 const SummaryPage = ({ navigation }: any) => {
