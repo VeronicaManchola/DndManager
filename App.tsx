@@ -18,6 +18,7 @@ import { Alert, View } from 'react-native';
 import { ThemeContext } from './src/contexts/theme.context';
 import { Switch, Text } from '@rneui/themed';
 import SummaryNavigator from './src/components/SummaryNavigator';
+import { CharactersProvider } from './src/contexts/characters.context';
 
 const Drawer = createDrawerNavigator();
 
@@ -51,74 +52,76 @@ const App = () => {
 
   return (
     <ThemeContext.Provider value={themeData}>
-      <AuthContext.Provider value={authContextMemo(dispatch)}>
-        <NavigationContainer theme={darkTheme ? appDarkTheme : appDefaultTheme}>
-          <Drawer.Navigator
-            initialRouteName="Login"
-            screenOptions={{
-              swipeEnabled: false,
-            }}
-            drawerContent={props => {
-              return (
-                <DrawerContentScrollView {...props}>
-                  <DrawerItemList {...props} />
-                  <DrawerItem
-                    labelStyle={{ fontFamily: 'sans-serif' }}
-                    label="Logout"
-                    onPress={async () => {
-                      dispatch({ type: 'LOADING_STATUS', isLoading: true });
-                      await auth()
-                        .signOut()
-                        .then(() => {
-                          props.navigation.closeDrawer();
-                          dispatch({ type: 'SIGN_OUT' });
-                        })
-                        .catch(() => Alert.alert('Something went wrong. Please try again.'));
-                    }}
-                  />
-                  <View
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      flexDirection: 'row',
-                      paddingLeft: 18,
-                      paddingRight: 10,
-                      borderRadius: 4,
-                    }}>
-                    <Text style={{ color: 'rgba(28, 28, 30, 0.68)', fontWeight: '600', fontFamily: 'inherit' }}>
-                      Dark mode
-                    </Text>
-                    <Switch
-                      trackColor={{ false: '#767577', true: '#81b0ff' }}
-                      thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                      ios_backgroundColor="#3e3e3e"
-                      onValueChange={toggleSwitch}
-                      value={isEnabled}
+      <CharactersProvider>
+        <AuthContext.Provider value={authContextMemo(dispatch)}>
+          <NavigationContainer theme={darkTheme ? appDarkTheme : appDefaultTheme}>
+            <Drawer.Navigator
+              initialRouteName="Login"
+              screenOptions={{
+                swipeEnabled: false,
+              }}
+              drawerContent={props => {
+                return (
+                  <DrawerContentScrollView {...props}>
+                    <DrawerItemList {...props} />
+                    <DrawerItem
+                      labelStyle={{ fontFamily: 'sans-serif' }}
+                      label="Logout"
+                      onPress={async () => {
+                        dispatch({ type: 'LOADING_STATUS', isLoading: true });
+                        await auth()
+                          .signOut()
+                          .then(() => {
+                            props.navigation.closeDrawer();
+                            dispatch({ type: 'SIGN_OUT' });
+                          })
+                          .catch(() => Alert.alert('Something went wrong. Please try again.'));
+                      }}
                     />
-                  </View>
-                </DrawerContentScrollView>
-              );
-            }}>
-            {state.isLoading ? (
-              <Drawer.Screen name="Login" component={LoadingPage} options={{ headerShown: false }} />
-            ) : !state.uid ? (
-              <>
-                <Drawer.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
-                <Drawer.Screen name="SignUp" component={SignUpPage} options={{ headerShown: false }} />
-              </>
-            ) : (
-              <Drawer.Screen
-                name="Home"
-                component={SummaryNavigator}
-                options={({ route }) => ({
-                  headerShown: getHeaderTitle(route),
-                })}
-              />
-            )}
-          </Drawer.Navigator>
-        </NavigationContainer>
-      </AuthContext.Provider>
+                    <View
+                      style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexDirection: 'row',
+                        paddingLeft: 18,
+                        paddingRight: 10,
+                        borderRadius: 4,
+                      }}>
+                      <Text style={{ color: 'rgba(28, 28, 30, 0.68)', fontWeight: '600', fontFamily: 'inherit' }}>
+                        Dark mode
+                      </Text>
+                      <Switch
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                      />
+                    </View>
+                  </DrawerContentScrollView>
+                );
+              }}>
+              {state.isLoading ? (
+                <Drawer.Screen name="Login" component={LoadingPage} options={{ headerShown: false }} />
+              ) : !state.uid ? (
+                <>
+                  <Drawer.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
+                  <Drawer.Screen name="SignUp" component={SignUpPage} options={{ headerShown: false }} />
+                </>
+              ) : (
+                <Drawer.Screen
+                  name="Home"
+                  component={SummaryNavigator}
+                  options={({ route }) => ({
+                    headerShown: getHeaderTitle(route),
+                  })}
+                />
+              )}
+            </Drawer.Navigator>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </CharactersProvider>
     </ThemeContext.Provider>
   );
 };

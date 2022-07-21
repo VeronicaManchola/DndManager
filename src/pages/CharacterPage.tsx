@@ -1,43 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Card, Input, Text } from '@rneui/themed';
 import { useTheme } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useContext } from 'react';
+import { CharactersContext } from '../contexts/characters.context';
 
 const characterValidationSchema = Yup.object().shape({
   name: Yup.string()
     .min(3)
     .trim()
-    .matches(/^[a-z]+$/)
+    .matches(/^[a-zA-Z\s]*$/, 'Please use only letters and spaces')
     .required('Name is required')
     .label('Name'),
   race: Yup.string()
     .min(3)
     .trim()
-    .matches(/^[a-z]+$/)
+    .matches(/^[a-zA-Z\s]*$/, 'Please use only letters and spaces')
     .required('Race is required')
     .label('Race'),
   class: Yup.string()
     .min(3)
     .trim()
-    .matches(/^[a-z]+$/)
+    .matches(/^[a-zA-Z\s]*$/, 'Please use only letters and spaces')
     .required('Class is required')
     .label('Class'),
   level: Yup.string().min(1).max(2).required('Level is required').label('Level'),
 });
 
-const AddCharacterPage = ({ navigation }: any) => {
+const CharacterPage = ({ navigation, route }: any) => {
   const { colors } = useTheme();
+  const { storeData } = useContext(CharactersContext);
+  const { action, values, id = '' } = route.params;
+
+  const getInitialValues = () => {
+    return values || { name: '', race: '', class: '', level: undefined };
+  };
+
+  useEffect(() => {
+    switch (action) {
+      case 'edit':
+        navigation.setOptions({ title: 'Edit Character' });
+        break;
+      default:
+        navigation.setOptions({ title: 'Add New Character' });
+        break;
+    }
+  }, []);
 
   return (
     <ScrollView>
       <Card containerStyle={styles.cardContainer}>
         <Formik
-          initialValues={{ name: '', race: '', class: '', level: undefined }}
+          initialValues={getInitialValues()}
           validationSchema={characterValidationSchema}
-          onSubmit={(values, { setSubmitting }) => {}}>
-          {({ setFieldValue, handleChange, handleBlur, handleSubmit, values, errors, isSubmitting }) => (
+          onSubmit={(values, { setSubmitting }) => {
+            storeData(values, id).then(res => {
+              setSubmitting(false);
+              navigation.navigate('Home', {
+                screen: 'Summary',
+              });
+            });
+          }}>
+          {({ setFieldValue, handleChange, handleBlur, handleSubmit, touched, values, errors, isSubmitting }) => (
             <View>
               <Card.Title>
                 <Input
@@ -46,7 +72,7 @@ const AddCharacterPage = ({ navigation }: any) => {
                   onChangeText={handleChange('name')}
                   onBlur={handleBlur('name')}
                   value={values.name}
-                  errorMessage={errors.name ? errors.name : ''}
+                  errorMessage={errors.name && touched.name ? errors.name : ''}
                 />
               </Card.Title>
               <Card.Divider />
@@ -57,7 +83,7 @@ const AddCharacterPage = ({ navigation }: any) => {
                 onChangeText={handleChange('race')}
                 onBlur={handleBlur('race')}
                 value={values.race}
-                errorMessage={errors.race ? errors.race : ''}
+                errorMessage={errors.race && touched.race ? errors.race : ''}
               />
               <Input
                 inputContainerStyle={styles.input}
@@ -66,7 +92,7 @@ const AddCharacterPage = ({ navigation }: any) => {
                 onChangeText={handleChange('class')}
                 onBlur={handleBlur('class')}
                 value={values.class}
-                errorMessage={errors.class ? errors.class : ''}
+                errorMessage={errors.class && touched.class ? errors.class : ''}
               />
               <Input
                 inputContainerStyle={styles.input}
@@ -76,7 +102,7 @@ const AddCharacterPage = ({ navigation }: any) => {
                 maxLength={2}
                 onChangeText={text => setFieldValue('level', text.replace(/[^0-9]/g, ''))}
                 value={values.level}
-                errorMessage={errors.level ? errors.level : ''}
+                errorMessage={errors.level && touched.level ? errors.level : ''}
               />
               <Button
                 buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, marginTop: 20 }}
@@ -105,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddCharacterPage;
+export default CharacterPage;
