@@ -6,12 +6,13 @@ import { useContext } from 'react';
 import { CharactersContext } from '../contexts/characters.context';
 import { useEffect } from 'react';
 
-const SummaryPage = ({ navigation }: any) => {
+const SummaryPage = ({ navigation, route }: any) => {
   const { colors } = useTheme();
   const { characters, getData } = useContext(CharactersContext);
+  const { uid } = route?.params;
 
   useEffect(() => {
-    getData();
+    if (uid) getData(uid);
   }, []);
 
   return (

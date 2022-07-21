@@ -116,6 +116,9 @@ const App = () => {
                   options={({ route }) => ({
                     headerShown: getHeaderTitle(route),
                   })}
+                  initialParams={{
+                    uid: state.uid,
+                  }}
                 />
               )}
             </Drawer.Navigator>

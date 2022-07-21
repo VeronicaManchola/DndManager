@@ -31,8 +31,8 @@ const characterValidationSchema = Yup.object().shape({
 
 const CharacterPage = ({ navigation, route }: any) => {
   const { colors } = useTheme();
-  const { storeData } = useContext(CharactersContext);
-  const { action, values, id = '' } = route.params;
+  const { storeData, deleteData } = useContext(CharactersContext);
+  const { action, values, id = '', uid } = route.params;
 
   const getInitialValues = () => {
     return values || { name: '', race: '', class: '', level: undefined };
@@ -49,6 +49,14 @@ const CharacterPage = ({ navigation, route }: any) => {
     }
   }, []);
 
+  const handleDelete = () => {
+    deleteData(uid, id).then(() => {
+      navigation.navigate('Home', {
+        screen: 'Summary',
+      });
+    });
+  };
+
   return (
     <ScrollView>
       <Card containerStyle={styles.cardContainer}>
@@ -56,7 +64,7 @@ const CharacterPage = ({ navigation, route }: any) => {
           initialValues={getInitialValues()}
           validationSchema={characterValidationSchema}
           onSubmit={(values, { setSubmitting }) => {
-            storeData(values, id).then(res => {
+            storeData(uid, values, id).then(() => {
               setSubmitting(false);
               navigation.navigate('Home', {
                 screen: 'Summary',
@@ -110,6 +118,22 @@ const CharacterPage = ({ navigation, route }: any) => {
                 title="Save"
                 disabled={isSubmitting}
               />
+              {action === 'edit' ? (
+                <Button
+                  buttonStyle={{
+                    backgroundColor: '#EC2127',
+                    borderRadius: 0,
+                    marginLeft: 0,
+                    marginRight: 0,
+                    marginBottom: 0,
+                    marginTop: 40,
+                  }}
+                  onPress={handleDelete}
+                  title="Delete"
+                />
+              ) : (
+                <></>
+              )}
             </View>
           )}
         </Formik>
